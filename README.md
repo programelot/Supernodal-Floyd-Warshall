@@ -1,7 +1,8 @@
 # Supernodal-Floyd-Warshall
 
 The Supernodal Floyd-Warshall algorithm is an algorithm that can solve all-pair-shortest-path in a sparse graph.
-I made this in 2021 the first semester of my graduate university project.
+I made this in 2020 the first semester of my graduate university project.
+The code was bit dirty so I cleaned it little bit at the end of 2023.
 For a traveler who travels the optimization field, I left this implementation in here.
 
 # Notes
