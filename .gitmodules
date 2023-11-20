@@ -1,0 +1,6 @@
+[submodule "modules/metis"]
+	path = modules/metis
+	url = https://github.com/KarypisLab/METIS.git
+[submodule "modules/papi"]
+	path = modules/papi
+	url = https://github.com/icl-utk-edu/papi.git
