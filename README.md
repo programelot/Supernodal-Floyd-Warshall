@@ -1,15 +1,5 @@
-# Supernodal-Floyd-Warshall
-
-The Supernodal Floyd-Warshall algorithm is an algorithm that can solve all-pair-shortest-path in a sparse graph.\
-I made this in 2020 the first semester of my graduate university project.\
-The code was bit dirty so I cleaned it little bit at the end of 2023.\
-For a traveler who travels the optimization field, I left this implementation in here.
-
-# Notes
-There could be a better implementation since I am not metis-friendly.\
-I made some parts of the operation in my own way of estimation. (Finding nested Dissection)\
-I will fix it when I can do it later.
-
-# Public paper
-**I am not an author of the Paper.** \
-https://dl.acm.org/doi/abs/10.1145/3332466.3374533
+# Archived
+* This is the original file that has been programmed in 2020.
+* This branch is out-of-date or may have bug.
+* It also includes documents I used in the seminar lecture. 
+* This branch will be not updated.
