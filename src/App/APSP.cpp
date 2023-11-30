@@ -1,7 +1,6 @@
-// Single Source Shortest Path Algorithm testing Application //
+// All Pair Shortest Path Algorithm testing Application //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
-
 
 #include <stdio.h>
 #include "Graph/Graph.hpp"

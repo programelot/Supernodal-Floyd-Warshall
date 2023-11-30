@@ -1,4 +1,4 @@
-// Djikstra algorithm library //
+// Deligated APSP algorithm library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
 

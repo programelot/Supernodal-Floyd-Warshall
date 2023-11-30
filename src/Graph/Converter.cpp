@@ -1,6 +1,7 @@
 // Graph converter library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
+
 #include "Common/Type.hpp"
 #include "Graph/Converter.hpp"
 #include "Graph/Graph.hpp"

@@ -1,4 +1,4 @@
-// Adjacent graph library //
+// Compressed sparse row graph library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
 #include "Common/Type.hpp"

@@ -2,7 +2,6 @@
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
 
-
 #include <stdio.h>
 #include "Graph/Graph.hpp"
 #include "Graph/Converter.hpp"
