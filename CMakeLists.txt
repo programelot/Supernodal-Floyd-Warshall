@@ -23,7 +23,6 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 #Libraries
 ## Graph
-add_library(AdjGraph ${SRC_ROOT}/Graph/AdjGraph.cpp)
 add_library(CSRGraph ${SRC_ROOT}/Graph/CSRGraph.cpp)
 add_library(Graph ${SRC_ROOT}/Graph/Graph.cpp)
 add_library(Converter ${SRC_ROOT}/Graph/Converter.cpp)
@@ -32,14 +31,30 @@ add_library(Converter ${SRC_ROOT}/Graph/Converter.cpp)
 add_library(BinaryHeap ${SRC_ROOT}/Heap/BinaryHeap.cpp)
 
 ## SSSP
-add_library(Bellman-Ford ${SRC_ROOT}/SSSP/Bellman-Ford.cpp)
-add_library(Dijkstra ${SRC_ROOT}/SSSP/Dijkstra.cpp)
+add_library(Bellman-Ford-SSSP ${SRC_ROOT}/SSSP/Bellman-Ford.cpp)
+target_link_libraries(Bellman-Ford-SSSP CSRGraph)
 
+add_library(Dijkstra-SSSP ${SRC_ROOT}/SSSP/Dijkstra.cpp)
+target_link_libraries(Dijkstra-SSSP CSRGraph BinaryHeap)
+
+## APSP
+add_library(Bellman-Ford-APSP ${SRC_ROOT}/APSP/Deligation.cpp)
+target_link_libraries(Bellman-Ford-APSP CSRGraph Bellman-Ford-SSSP)
+
+add_library(Dijkstra-APSP ${SRC_ROOT}/APSP/Deligation.cpp)
+target_link_libraries(Dijkstra-APSP CSRGraph BinaryHeap Dijkstra-SSSP)
 
 #Applications
 add_executable(SSSP_Bellman ${SRC_ROOT}/App/SSSP.cpp)
+target_link_libraries(SSSP_Bellman CSRGraph Graph Converter Bellman-Ford-SSSP)
+
 add_executable(SSSP_Dijkstra ${SRC_ROOT}/App/SSSP.cpp)
-target_link_libraries(SSSP_Bellman CSRGraph Graph Converter Bellman-Ford)
-target_link_libraries(SSSP_Dijkstra CSRGraph Graph Converter BinaryHeap Dijkstra)
+target_link_libraries(SSSP_Dijkstra CSRGraph Graph Converter  Dijkstra-SSSP)
+
+add_executable(APSP_Bellman ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_Bellman CSRGraph Graph Converter Bellman-Ford-APSP)
+
+add_executable(APSP_Dijkstra ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_Dijkstra CSRGraph Graph Converter Dijkstra-APSP)
 
 add_compile_definitions(-g)

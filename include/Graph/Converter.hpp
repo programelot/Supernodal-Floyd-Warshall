@@ -4,7 +4,6 @@
 #include "Common/Type.hpp"
 #include "Graph/Graph.hpp"
 #include "Graph/CSRGraph.hpp"
-#include "Graph/AdjGraph.hpp"
 
 #ifndef INCLUDE_Converter_HPP
 #define INCLUDE_Converter_HPP
