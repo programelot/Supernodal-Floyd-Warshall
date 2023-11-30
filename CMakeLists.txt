@@ -38,10 +38,10 @@ add_library(Dijkstra-SSSP ${SRC_ROOT}/SSSP/Dijkstra.cpp)
 target_link_libraries(Dijkstra-SSSP CSRGraph BinaryHeap)
 
 ## APSP
-add_library(Bellman-Ford-APSP ${SRC_ROOT}/APSP/Deligation.cpp)
+add_library(Bellman-Ford-APSP ${SRC_ROOT}/APSP/Delegation.cpp)
 target_link_libraries(Bellman-Ford-APSP CSRGraph Bellman-Ford-SSSP)
 
-add_library(Dijkstra-APSP ${SRC_ROOT}/APSP/Deligation.cpp)
+add_library(Dijkstra-APSP ${SRC_ROOT}/APSP/Delegation.cpp)
 target_link_libraries(Dijkstra-APSP CSRGraph BinaryHeap Dijkstra-SSSP)
 
 #Applications
