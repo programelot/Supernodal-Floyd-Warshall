@@ -9,8 +9,8 @@ For a traveler who travels the optimization field, I left this implementation in
 
 # Prerequirement
 
-I rebuilt this on Windows desktop.
-Therefore, I installed LLVM in the local desktop.
+I rebuilt this on Windows desktop.\
+Therefore, I installed LLVM in the local desktop.\
 Please use following commands to install it.
 
 ```bash
