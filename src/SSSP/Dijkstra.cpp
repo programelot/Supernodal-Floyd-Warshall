@@ -7,12 +7,6 @@
 #include "Common/Type.hpp"
 #include "Heap/BinaryHeap.hpp"
 
-namespace{
-    weight_t min(weight_t a, weight_t b){
-        return a > b? b : a;
-    }
-}
-
 void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
 
     size_t size = input_graph.Size();
