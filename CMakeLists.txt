@@ -22,13 +22,15 @@ include_directories(${CMAKE_SOURCE_DIR}/modules/metis/build/src/include)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 #Libraries
+
+## Heap
+add_library(BinaryHeap ${SRC_ROOT}/Heap/BinaryHeap.cpp)
+
 ## Graph
 add_library(CSRGraph ${SRC_ROOT}/Graph/CSRGraph.cpp)
 add_library(Graph ${SRC_ROOT}/Graph/Graph.cpp)
 add_library(Converter ${SRC_ROOT}/Graph/Converter.cpp)
 
-## Heap
-add_library(BinaryHeap ${SRC_ROOT}/Heap/BinaryHeap.cpp)
 
 ## SSSP
 add_library(Bellman-Ford-SSSP ${SRC_ROOT}/SSSP/Bellman-Ford.cpp)
@@ -44,6 +46,12 @@ target_link_libraries(Bellman-Ford-APSP CSRGraph Bellman-Ford-SSSP)
 add_library(Dijkstra-APSP ${SRC_ROOT}/APSP/Delegation.cpp)
 target_link_libraries(Dijkstra-APSP CSRGraph BinaryHeap Dijkstra-SSSP)
 
+add_library(FloydWarshall ${SRC_ROOT}/APSP/FloydWarshall.cpp)
+target_link_libraries(FloydWarshall CSRGraph)
+
+add_library(Johnson ${SRC_ROOT}/APSP/Johnson.cpp)
+target_link_libraries(Johnson CSRGraph BinaryHeap)
+
 #Applications
 add_executable(SSSP_Bellman ${SRC_ROOT}/App/SSSP.cpp)
 target_link_libraries(SSSP_Bellman CSRGraph Graph Converter Bellman-Ford-SSSP)
@@ -56,5 +64,11 @@ target_link_libraries(APSP_Bellman CSRGraph Graph Converter Bellman-Ford-APSP)
 
 add_executable(APSP_Dijkstra ${SRC_ROOT}/App/APSP.cpp)
 target_link_libraries(APSP_Dijkstra CSRGraph Graph Converter Dijkstra-APSP)
+
+add_executable(APSP_FloydWarshall ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_FloydWarshall CSRGraph Graph Converter FloydWarshall)
+
+add_executable(APSP_Johnson ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_Johnson CSRGraph Graph Converter Johnson)
 
 add_compile_definitions(-g)

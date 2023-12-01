@@ -69,10 +69,7 @@ BinaryHeap::BinaryHeap(BinaryHeap &&binaryHeap){
 }
 
 BinaryHeap::~BinaryHeap(){
-    for(int i = 0; i < Size(); ++i){
-        delete heap[i];
-        delete heapTicket[i];
-    }
+    clear();
 }
 
 BinaryHeapTicket* BinaryHeap::Insert(HeapNode data){
@@ -123,6 +120,15 @@ HeapNode BinaryHeap::Get(BinaryHeapTicket* ticket){
 
 bool BinaryHeap::isEmpty(){
     return heap.empty();
+}
+
+void BinaryHeap::clear(){
+    for(int i = 0; i < Size(); ++i){
+        delete heap[i];
+        delete heapTicket[i];
+    }
+    heap.clear();
+    heapTicket.clear();
 }
 
 // #include <iostream>

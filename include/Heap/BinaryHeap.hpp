@@ -45,6 +45,7 @@ public:
     HeapNode Get(BinaryHeapTicket* ticket);
     size_t Size();
     bool isEmpty();
+    void clear();
     // void print();
 };
 
