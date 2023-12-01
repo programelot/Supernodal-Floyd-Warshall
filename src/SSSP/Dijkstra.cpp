@@ -24,7 +24,7 @@ void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
     //Initialize
     for(int i = 0; i < size; ++i){
         result[i] = kWeightInf;
-        visited[i] = 0;
+        visited[i] = false;
         ticket[i] = nullptr;
     }
     result[src] = 0;
