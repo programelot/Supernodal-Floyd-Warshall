@@ -20,11 +20,8 @@ weight_t Edge::Value() const{
     return value;
 }
 
-void Vertex::connect(Vertex& const v, weight_t value){
+void Vertex::Connect(Vertex& const v, weight_t value){
     //Ignore duplicated edges
-    for(auto e = edges.begin(); e != edges.end(); ++e){
-        if(&e->To() == &v) return;
-    }
     edges.emplace_back(&v, value);
 }
 
@@ -32,7 +29,7 @@ const std::vector<Edge>& Vertex::Edges() const{
     return edges;
 }
 
-void Vertex::shrink(){
+void Vertex::Shrink(){
     edges.shrink_to_fit();
 }
 
@@ -40,15 +37,23 @@ Graph::Graph(size_t size){
     this->size = size;
     vertices = new Vertex[size];
 }
+
+Graph::Graph(Graph&& graph){
+    size = graph.size;
+    vertices = graph.vertices;
+    graph.vertices = nullptr;
+}
+
 Graph::~Graph(){
-    delete[] vertices;
+    if(vertices != nullptr)
+        delete[] vertices;
 }
-void Graph::connect(size_t from, size_t to, weight_t value){
-    vertices[from].connect(vertices[to], value);
+void Graph::Connect(size_t from, size_t to, weight_t value){
+    vertices[from].Connect(vertices[to], value);
 }
-void Graph::shrink(){
+void Graph::Shrink(){
     for(int i = 0; i < size; ++i){
-        vertices[i].shrink();
+        vertices[i].Shrink();
     }
 }
 

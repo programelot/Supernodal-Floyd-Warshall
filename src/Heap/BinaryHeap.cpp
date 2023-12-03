@@ -85,7 +85,7 @@ BinaryHeapTicket* BinaryHeap::Insert(HeapNode data){
 }
 
 HeapNode BinaryHeap::Pop(){
-    assert("Can not get min from empty heap" && Size() > 0);
+    assert("Can not get minimum from empty heap" && Size() > 0);
     HeapNode top;
     top.value = heap[0]->value;
     top.index = heap[0]->index;
@@ -99,7 +99,7 @@ HeapNode BinaryHeap::Pop(){
 }
 
 HeapNode BinaryHeap::GetMin(){
-    assert("Can not get min from empty heap" && Size() > 0);
+    assert("Can not get minimum from empty heap" && Size() > 0);
     HeapNode top;
     top.value = heap[0]->value;
     top.index = heap[0]->index;
