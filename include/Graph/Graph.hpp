@@ -4,8 +4,8 @@
 #include "Common/Type.hpp"
 #include <vector>
 
-#ifndef INCLUDE_Graph_HPP
-#define INCLUDE_Graph_HPP
+#ifndef INCLUDE_GRAPH_HPP
+#define INCLUDE_GRAPH_HPP
 
 class Vertex;
 
@@ -27,10 +27,10 @@ class Vertex{
 private:
     std::vector<Edge> edges;
 public:
-    void connect(Vertex& const v, weight_t value);
+    void Connect(Vertex& v, weight_t value);
     const std::vector<Edge>& Edges() const;
     //Remove unnecessary data
-    void shrink();
+    void Shrink();
 };
 
 //Pointer based graph
@@ -40,10 +40,11 @@ private:
     size_t size;
 public:
     Graph(size_t size);
+    Graph(Graph&& graph);
     ~Graph();
-    void connect(size_t from, size_t to, weight_t value);
+    void Connect(size_t from, size_t to, weight_t value);
     //Remove unnecessary data
-    void shrink();
+    void Shrink();
     Vertex* Vertices() const;
     size_t Size() const;
 };

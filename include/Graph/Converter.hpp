@@ -5,12 +5,11 @@
 #include "Graph/Graph.hpp"
 #include "Graph/CSRGraph.hpp"
 
-#ifndef INCLUDE_Converter_HPP
-#define INCLUDE_Converter_HPP
+#ifndef INCLUDE_CONVERTER_HPP
+#define INCLUDE_CONVERTER_HPP
 class Converter{
 private:
     Converter(){}//Singleton
-    static Converter instance;
 public:
     static Converter& Instance();
     CSRGraph ToCSR(const Graph& g);

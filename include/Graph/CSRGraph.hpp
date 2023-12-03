@@ -3,8 +3,8 @@
 // Contact: programelot@gmail.com //
 #include "Common/Type.hpp"
 
-#ifndef INCLUDE_CSRGraph_HPP
-#define INCLUDE_CSRGraph_HPP
+#ifndef INCLUDE_CSRGRAPH_HPP
+#define INCLUDE_CSRGRAPH_HPP
 
 //Compressed sparse row Graphrix
 //https://en.wikipedia.org/wiki/Sparse_Graphrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_forGraph)
