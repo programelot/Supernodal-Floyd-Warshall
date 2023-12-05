@@ -2,17 +2,19 @@
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
 
-#include <stdio.h>
+#include <fstream>
+#include <time.h>
+#include <string>
+
 #include "Graph/Graph.hpp"
 #include "Graph/Converter.hpp"
 #include "Graph/CSRGraph.hpp"
 #include "Matrix/MtxReader.hpp"
 #include "Algorithm/APSP.hpp"
-#include <time.h>
 
 int main(int argc, char* argv[]){
-    if(argc != 2){
-        printf("Usage : APSP MatrixFile \n");
+    if(argc != 3){
+        printf("Usage : APSP MatrixFile Output\n");
         return 0;
     }
     clock_t start, finish;
@@ -20,6 +22,8 @@ int main(int argc, char* argv[]){
     Graph g = MtxReader::Instance().Read(argv[1]);
 
     CSRGraph csr = Converter::Instance().ToCSR(g);
+    std::ofstream reportFile;
+    reportFile.open(argv[2]);
     weight_t* result = nullptr;
     start = clock();
     APSP(csr, &result);
@@ -30,10 +34,12 @@ int main(int argc, char* argv[]){
     size_t N = g.Size();
     for(int i = 0; i < N ; ++i){
         for(int j = 0; j < N; ++j){
-            printf("%f ", result[i * N + j]);
-        }
+            std::string value = std::to_string(result[i * N + j]);
+            reportFile.write(value.c_str(),value.size());
+            reportFile.write(" ", 1);
+        }reportFile.write("\n", 1);
     }
-    printf("\n");
     delete[] result;
+    reportFile.close();
     return 0;
 }
