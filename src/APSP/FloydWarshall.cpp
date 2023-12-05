@@ -33,6 +33,7 @@ void APSP(const CSRGraph& input_graph, weight_t** distance){
        for(size_t i = 0; i < size; ++i){
             for(size_t j = 0; j < size; ++j){
                 weight_t oldValue = result[i * size + j];
+                if(result[i * size + k] == kWeightInf || result[k * size + j] == kWeightInf) continue;
                 weight_t newValue = result[i * size + k] + result[k * size + j];
                 if(oldValue > newValue)
                     result[i * size + j] = newValue;
