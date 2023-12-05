@@ -1,13 +1,14 @@
 // Djikstra algorithm library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
+// Time complexity : O(|E|log|V|) //
 
 #include "Graph/CSRGraph.hpp"
 #include "Algorithm/SSSP.hpp"
 #include "Common/Type.hpp"
 #include "Heap/BinaryHeap.hpp"
 
-void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
+void SSSP(size_t src, const CSRGraph& input_graph, weight_t** distance){
 
     size_t size = input_graph.Size();
     size_t* rowPtr = input_graph.RowPtr();
@@ -22,7 +23,7 @@ void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
     BinaryHeap heap;
 
     //Initialize
-    for(int i = 0; i < size; ++i){
+    for(size_t i = 0; i < size; ++i){
         result[i] = kWeightInf;
         visited[i] = false;
         ticket[i] = nullptr;
@@ -30,6 +31,7 @@ void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
     result[src] = 0;
     visited[src] = true;
     for(size_t i = rowPtr[src]; i < rowPtr[src + 1]; ++i){
+        if(colIdx[i] == src) continue;
         HeapNode data;
         data.index = colIdx[i];
         data.value = value[i];
