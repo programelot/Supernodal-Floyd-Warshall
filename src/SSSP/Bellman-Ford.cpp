@@ -1,6 +1,7 @@
 // Bllman-ford algorithm library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
+// Time complexity : O(|E||V|) //
 
 #include "Graph/CSRGraph.hpp"
 #include "Algorithm/SSSP.hpp"
@@ -12,7 +13,7 @@ namespace{
     }
 }
 
-void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
+void SSSP(size_t src, const CSRGraph& input_graph, weight_t** distance){
 
     size_t size = input_graph.Size();
     size_t* rowPtr = input_graph.RowPtr();
@@ -26,17 +27,22 @@ void SSSP(int src, const CSRGraph& input_graph, weight_t** distance){
         result[i] = kWeightInf;
     }
     result[src] = 0;
-    for(size_t i = rowPtr[src]; i < rowPtr[src + 1]; ++i){
-        result[colIdx[i]] = value[i];
-    }
+    // bool quickExit = false;
     for(size_t repeat = 0; repeat < size - 1; ++repeat){
+        // if(quickExit) break;
+        // quickExit = true;
         for(size_t i = 0; i < size; ++i){
              //If i is not reachable, pass
             if(result[i] == kWeightInf){ 
                 continue;
             }
             for(size_t j = rowPtr[i]; j < rowPtr[i + 1]; ++j){
-                result[colIdx[j]] = min(result[colIdx[j]], result[i] + value[j]);
+                weight_t oldVal = result[colIdx[j]];
+                weight_t newVal = result[i] + value[j];
+                if(newVal < oldVal){
+                    result[colIdx[j]] = newVal;
+                    // quickExit = false;
+                }
             }
         }
     }
