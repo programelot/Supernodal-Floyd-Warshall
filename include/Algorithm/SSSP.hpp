@@ -12,6 +12,6 @@
 //input_graph is used by read-only.
 //distance will be used to get the result.
 //It will be assigned inside of SSSP function.
-void SSSP(int src, const CSRGraph& input_graph, weight_t** distance);
+void SSSP(size_t src, const CSRGraph& input_graph, weight_t** distance);
 
 #endif
