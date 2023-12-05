@@ -87,6 +87,7 @@ CSRGraph Converter::ToCSR(const Graph& g){
             colIdx[base + j] = (&edges[j].To() - &vertices[0]);
             value[base + j] = edges[j].Value();
         }
+        if(edges.size() < 2) continue;
         //Sort colIdx, Value
         sort(&colIdx[base], &value[base], edges.size());
         for(size_t j = 0; j < edges.size() - 1; ++j){
