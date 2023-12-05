@@ -47,7 +47,7 @@ void APSP(const CSRGraph& input_graph, weight_t** distance){
     rowPtr_Arg[size_arg] = nnz_arg;
     size_t base = rowPtr_Arg[size];
     for(size_t j = 0; j < size; ++j){
-        colIdx_Arg[base + j] = j + 1;
+        colIdx_Arg[base + j] = j;
         value_Arg[base + j] = 0;
     }
 
@@ -59,22 +59,30 @@ void APSP(const CSRGraph& input_graph, weight_t** distance){
         result_Bellman[i] = kWeightInf;
     }
     result_Bellman[src_arg] = 0;
-    for(size_t i = rowPtr_Arg[src_arg]; i < rowPtr_Arg[src_arg + 1]; ++i){
-        result_Bellman[colIdx_Arg[i]] = value_Arg[i];
-    }
+    // bool quickExit = false;
     for(size_t repeat = 0; repeat < src_arg - 1; ++repeat){
+        // if(quickExit) break;
+        // quickExit = true;
         for(size_t i = 0; i < size_arg; ++i){
              //If i is not reachable, pass
             if(result_Bellman[i] == kWeightInf){ 
                 continue;
             }
             for(size_t j = rowPtr_Arg[i]; j < rowPtr_Arg[i + 1]; ++j){
-                result_Bellman[colIdx_Arg[j]] = 
-                                    min(result_Bellman[colIdx_Arg[j]], 
-                                    result_Bellman[i] + value_Arg[j]);
+                weight_t oldVal = result_Bellman[colIdx_Arg[j]];
+                weight_t newVal = result_Bellman[i] + value_Arg[j];
+                if(newVal < oldVal){
+                    result_Bellman[colIdx_Arg[j]] = newVal;
+                    // quickExit = false;
+                }
             }
         }
     }
+    // printf("=========================\n");
+    // for(size_t i = 0; i < size_arg; ++i){
+    //     printf("%f ", result_Bellman[i]);
+    // }printf("\n");
+    // printf("=========================\n");
 
     //Remove negative edge
     weight_t* value_positive = new weight_t[nnz];
