@@ -7,7 +7,7 @@
 #include "Graph/Graph.hpp"
 #include "Graph/CSRGraph.hpp"
 #include <vector>
-#include <cassert>
+#include "Common/DebugAssert.hpp"
 
 namespace{
     template<typename T>
@@ -91,7 +91,7 @@ CSRGraph Converter::ToCSR(const Graph& g){
         //Sort colIdx, Value
         sort(&colIdx[base], &value[base], edges.size());
         for(size_t j = 0; j < edges.size() - 1; ++j){
-            assert("No multigraph supports" && colIdx[base + j] != colIdx[base + j + 1]);
+            AssertDebug(__FILE__, __LINE__,"No multigraph supports", colIdx[base + j] != colIdx[base + j + 1]);
         }
     }
     CSRGraph csr(size, rowPtr, colIdx, value);

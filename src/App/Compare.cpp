@@ -1,5 +1,5 @@
 #include <fstream>
-#include <cassert>
+#include "Common/DebugAssert.hpp"
 #include <string>
 #include <iostream>
 #include "Common/StringFunc.hpp"
@@ -18,11 +18,11 @@ int main(int argc, const char* argv[]){
     std::ifstream file1, file2;
     printf("Open file %s\n", argv[1]);
     file1.open(argv[1]);
-    assert("File can not be opend" && file1.is_open());
+    AssertDebug(__FILE__, __LINE__,"File can not be opend", file1.is_open());
 
     printf("Open file %s\n", argv[2]);
     file2.open(argv[2]);
-    assert("File can not be opend" && file2.is_open());
+    AssertDebug(__FILE__, __LINE__,"File can not be opend", file2.is_open());
 
     float error = 0;
     std::string value1, value2;

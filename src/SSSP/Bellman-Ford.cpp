@@ -29,7 +29,7 @@ void SSSP(size_t src, const CSRGraph& input_graph, weight_t** distance){
     result[src] = 0;
     // bool quickExit = false;
     for(size_t repeat = 0; repeat < size - 1; ++repeat){
-        // if(quickExit) break;
+        // if(quickExit) break;//If it is stable, exit it fast
         // quickExit = true;
         for(size_t i = 0; i < size; ++i){
              //If i is not reachable, pass

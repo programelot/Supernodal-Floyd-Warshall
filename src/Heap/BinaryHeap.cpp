@@ -3,7 +3,7 @@
 // Contact: programelot@gmail.com //
 #include "Common/Type.hpp"
 #include "Heap/BinaryHeap.hpp"
-#include <cassert>
+#include "Common/DebugAssert.hpp"
 
 void BinaryHeap::FixHeap(size_t index){
     do{//UpHeap
@@ -85,7 +85,7 @@ BinaryHeapTicket* BinaryHeap::Insert(HeapNode data){
 }
 
 HeapNode BinaryHeap::Pop(){
-    assert("Can not get minimum from empty heap" && Size() > 0);
+    AssertDebug(__FILE__, __LINE__,"Can not get minimum from empty heap", Size() > 0);
     HeapNode top;
     top.value = heap[0]->value;
     top.index = heap[0]->index;
@@ -99,7 +99,7 @@ HeapNode BinaryHeap::Pop(){
 }
 
 HeapNode BinaryHeap::GetMin(){
-    assert("Can not get minimum from empty heap" && Size() > 0);
+    AssertDebug(__FILE__, __LINE__,"Can not get minimum from empty heap", Size() > 0);
     HeapNode top;
     top.value = heap[0]->value;
     top.index = heap[0]->index;
