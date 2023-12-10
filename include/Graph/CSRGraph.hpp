@@ -1,10 +1,11 @@
 // Compressed sparse row graph library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
-#include "Common/Type.hpp"
 
 #ifndef INCLUDE_CSRGRAPH_HPP
 #define INCLUDE_CSRGRAPH_HPP
+
+#include "Common/Type.hpp"
 
 //Compressed sparse row Graphrix
 //https://en.wikipedia.org/wiki/Sparse_Graphrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_forGraph)

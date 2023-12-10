@@ -1,11 +1,12 @@
 // Standard graph library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
-#include "Common/Type.hpp"
-#include <vector>
 
 #ifndef INCLUDE_GRAPH_HPP
 #define INCLUDE_GRAPH_HPP
+
+#include "Common/Type.hpp"
+#include <vector>
 
 class Vertex;
 

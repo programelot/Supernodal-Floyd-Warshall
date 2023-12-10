@@ -1,11 +1,11 @@
 // Binary heap using std::Vector library //
 // Author : Hyunmo Sung //
 // Contact: programelot@gmail.com //
-#include "Common/Type.hpp"
 
 #ifndef INCLUDE_BINARYHEAP_HPP
 #define INCLUDE_BINARYHEAP_HPP
 
+#include "Common/Type.hpp"
 #include <vector>
 
 typedef struct{
