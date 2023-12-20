@@ -10,42 +10,36 @@
 
 typedef struct{
     //Two value to be stored
-    size_t index;
+    dataSize_t index;
     weight_t value;
 }HeapNode;
-
-class BinaryHeapTicket{
-private:
-    friend class BinaryHeap;
-    //Index that can be used to retrive position from HeapNode
-    size_t index;
-};
 
 //Heap interface
 class BinaryHeap{
 private:
     //Heapfied list
-    std::vector<HeapNode*> heap;
-    std::vector<BinaryHeapTicket*> heapTicket;
-    //Map table from insert order to actual index of heap
+    HeapNode* heap;
+    dataSize_t* indexMap;
+    dataSize_t size;
+    dataSize_t occupiedSize;
     //Fix heap by upheap and downheap
-    void FixHeap(size_t index);
+    void FixHeap(dataSize_t index);
     //Swap data in heapifed list.
     //It will fix map at the same time.
-    void swap(size_t a, size_t b);
+    void swap(dataSize_t a, dataSize_t b);
 public:
-    BinaryHeap();
+    BinaryHeap(dataSize_t size);
     BinaryHeap(BinaryHeap &&binaryHeap);
     ~BinaryHeap();
 
-    BinaryHeapTicket* Insert(HeapNode data) ;
+    void Insert(int index, weight_t value);
     HeapNode Pop();
-    HeapNode GetMin();
-    void Update(BinaryHeapTicket* ticket, HeapNode data);
-    HeapNode Get(BinaryHeapTicket* ticket);
-    size_t Size();
-    bool isEmpty();
-    void clear();
+    void Update(int index, weight_t value);
+    bool Inserted(int index);
+    weight_t Get(int index);
+    dataSize_t Size();
+    bool IsEmpty();
+    void Clear();
     // void print();
 };
 

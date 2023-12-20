@@ -5,10 +5,10 @@
 #include "Heap/BinaryHeap.hpp"
 #include "Common/DebugAssert.hpp"
 
-void BinaryHeap::FixHeap(size_t index){
+void BinaryHeap::FixHeap(dataSize_t index){
     do{//UpHeap
         if(index > 0){//Has parent
-            if(heap[index]->value < heap[(index - 1)/2]->value){
+            if(heap[index].value < heap[(index - 1)/2].value){
                 swap(index, (index - 1)/2);
                 index = (index - 1)/2;
                 continue;
@@ -17,19 +17,19 @@ void BinaryHeap::FixHeap(size_t index){
         break;
     }while(true);
     do{//DownHeap
-        if(index * 2 + 1 < heap.size()){
-            if(index * 2 + 2 < heap.size()){
-                size_t compareWith =
-                    heap[2 * index + 1]->value < heap[2 * index + 2]->value?
+        if(index * 2 + 1 < occupiedSize){
+            if(index * 2 + 2 < occupiedSize){
+                dataSize_t compareWith =
+                    heap[2 * index + 1].value < heap[2 * index + 2].value?
                     2 * index + 1 : 2 * index + 2;
-                if(heap[compareWith]->value < heap[index]->value){
+                if(heap[compareWith].value < heap[index].value){
                     swap(index, compareWith);
                     index = compareWith;
                     continue;
                 }
             }
             else{
-                if(heap[index]->value > heap[2 * index + 1]->value){
+                if(heap[index].value > heap[2 * index + 1].value){
                     swap(index, 2 * index + 1);
                     index = 2 * index + 1;
                     continue;
@@ -40,95 +40,98 @@ void BinaryHeap::FixHeap(size_t index){
     }while(true);
 }
 
-void BinaryHeap::swap(size_t a, size_t b){
+void BinaryHeap::swap(dataSize_t a, dataSize_t b){
+    if(a == b) return;
     {
-        HeapNode* temp = heap[a];
+        dataSize_t ai = heap[a].index;
+        dataSize_t bi = heap[b].index;
+        dataSize_t temp = indexMap[ai];
+        indexMap[ai] = indexMap[bi];
+        indexMap[bi] = temp;
+    }
+    {
+        HeapNode temp = heap[a];
         heap[a] = heap[b];
         heap[b] = temp;
     }
-    {
-        BinaryHeapTicket* temp = heapTicket[a];
-        heapTicket[a] = heapTicket[b];
-        heapTicket[b] = temp;
-        heapTicket[a]->index = a;
-        heapTicket[b]->index = b;
+}
+
+dataSize_t BinaryHeap::Size(){
+    return size;
+}
+
+BinaryHeap::BinaryHeap(dataSize_t size){
+    heap = new HeapNode[size];
+    indexMap = new dataSize_t[size];
+    occupiedSize = 0;
+    for(dataSize_t i = 0; i < size; ++i){
+        indexMap[i] = size;
     }
+    this->size = size;
 }
-
-size_t BinaryHeap::Size(){
-    return heap.size();
-}
-
-BinaryHeap::BinaryHeap(){}
 
 BinaryHeap::BinaryHeap(BinaryHeap &&binaryHeap){
     heap = binaryHeap.heap;
-    heapTicket = binaryHeap.heapTicket;
-    binaryHeap.heap.clear();
-    binaryHeap.heapTicket.clear();
+    indexMap = binaryHeap.indexMap;
+    occupiedSize = binaryHeap.occupiedSize;
+    binaryHeap.heap = nullptr;
+    binaryHeap.indexMap = nullptr;
 }
 
 BinaryHeap::~BinaryHeap(){
-    clear();
+    Clear();
 }
 
-BinaryHeapTicket* BinaryHeap::Insert(HeapNode data){
-    HeapNode* newValue = new HeapNode();
-    newValue->index = data.index;
-    newValue->value = data.value;
-    heap.emplace_back(newValue);
-    BinaryHeapTicket* binTicket = new BinaryHeapTicket();
-    binTicket->index = Size() - 1;
-    heapTicket.emplace_back(binTicket);
-    FixHeap(Size() - 1);
-    return binTicket;
+void BinaryHeap::Insert(int index, weight_t value){
+    DebugAssert(__FILE__, __LINE__, "Can not insert index bigger than size of heap", index < size);
+    heap[occupiedSize].index = index;
+    heap[occupiedSize].value = value;
+    indexMap[index] = occupiedSize;
+    FixHeap(occupiedSize);
+    ++occupiedSize;
 }
 
 HeapNode BinaryHeap::Pop(){
-    AssertDebug(__FILE__, __LINE__,"Can not get minimum from empty heap", Size() > 0);
     HeapNode top;
-    top.value = heap[0]->value;
-    top.index = heap[0]->index;
-    swap(0, Size() - 1);
-    delete heap[Size() - 1];
-    delete heapTicket[Size() - 1];
-    heap.pop_back();
-    heapTicket.pop_back();
+    top.value = heap[0].value;
+    top.index = heap[0].index;
+    swap(0, occupiedSize - 1);
+    indexMap[top.index] = size;
+    --occupiedSize;
     FixHeap(0);
     return top;
 }
 
-HeapNode BinaryHeap::GetMin(){
-    AssertDebug(__FILE__, __LINE__,"Can not get minimum from empty heap", Size() > 0);
-    HeapNode top;
-    top.value = heap[0]->value;
-    top.index = heap[0]->index;
-    return top;
+void BinaryHeap::Update(int index, weight_t value){
+    dataSize_t mappedIndex = indexMap[index];
+    heap[mappedIndex].index = index;
+    heap[mappedIndex].value = value;
+    FixHeap(mappedIndex);
 }
 
-void BinaryHeap::Update(BinaryHeapTicket* ticket, HeapNode data){
-    size_t index = ticket->index;
-    heap[index]->index = data.index;
-    heap[index]->value = data.value;
-    FixHeap(index);
+bool BinaryHeap::Inserted(int index){
+    if(indexMap[index] == size) return false;
+    return true;
 }
 
-HeapNode BinaryHeap::Get(BinaryHeapTicket* ticket){
-    size_t index = ticket->index;
-    return *heap[index];
+weight_t BinaryHeap::Get(int index){
+    dataSize_t mappedIndex = indexMap[index];
+    return heap[mappedIndex].value;
 }
 
-bool BinaryHeap::isEmpty(){
-    return heap.empty();
+bool BinaryHeap::IsEmpty(){
+    return occupiedSize == 0;
 }
 
-void BinaryHeap::clear(){
-    for(int i = 0; i < Size(); ++i){
-        delete heap[i];
-        delete heapTicket[i];
+void BinaryHeap::Clear(){
+    if(heap != nullptr){
+        delete[] heap;
+        heap = nullptr;
     }
-    heap.clear();
-    heapTicket.clear();
+    if(indexMap != nullptr){
+        delete[] indexMap;
+        indexMap = nullptr;
+    }
 }
 
 // #include <iostream>
