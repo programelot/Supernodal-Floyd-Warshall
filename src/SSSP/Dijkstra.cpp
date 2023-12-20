@@ -8,60 +8,45 @@
 #include "Common/Type.hpp"
 #include "Heap/BinaryHeap.hpp"
 
-void SSSP(size_t src, const CSRGraph& input_graph, weight_t** distance){
+void SSSP(dataSize_t src, const CSRGraph& input_graph, weight_t* distance){
 
-    size_t size = input_graph.Size();
-    size_t* rowPtr = input_graph.RowPtr();
-    size_t* colIdx = input_graph.ColIdx();
+    dataSize_t size = input_graph.Size();
+    dataSize_t* rowPtr = input_graph.RowPtr();
+    dataSize_t* colIdx = input_graph.ColIdx();
     weight_t* value = input_graph.Value();
 
-
-    *distance = new weight_t[size];
-    weight_t* result = *distance;
-    BinaryHeapTicket** ticket = new BinaryHeapTicket*[size];
     bool* visited = new bool[size];
-    BinaryHeap heap;
-
+    BinaryHeap heap(size);
     //Initialize
-    for(size_t i = 0; i < size; ++i){
-        result[i] = kWeightInf;
+    for(dataSize_t i = 0; i < size; ++i){
+        distance[i] = kWeightInf;
         visited[i] = false;
-        ticket[i] = nullptr;
     }
-    result[src] = 0;
+    distance[src] = 0;
     visited[src] = true;
-    for(size_t i = rowPtr[src]; i < rowPtr[src + 1]; ++i){
+    for(dataSize_t i = rowPtr[src]; i < rowPtr[src + 1]; ++i){
         if(colIdx[i] == src) continue;
-        HeapNode data;
-        data.index = colIdx[i];
-        data.value = value[i];
-        ticket[colIdx[i]] = heap.Insert(data);
+        heap.Insert(colIdx[i], value[i]);
     }
-    while(!heap.isEmpty()){
+    while(!heap.IsEmpty()){
         HeapNode top = heap.Pop();
-        size_t selected = top.index;
+        dataSize_t selected = top.index;
         visited[selected] = true;
-        result[selected] = top.value;
-        for(size_t i = rowPtr[selected]; i < rowPtr[selected + 1]; ++i){
+        distance[selected] = top.value;
+        for(dataSize_t i = rowPtr[selected]; i < rowPtr[selected + 1]; ++i){
             if(visited[colIdx[i]]) continue;
-            if(ticket[colIdx[i]] == nullptr){
-                HeapNode data;
-                data.index = colIdx[i];
-                data.value = value[i] + result[selected];
-                ticket[colIdx[i]] = heap.Insert(data);
+            if(heap.Inserted(colIdx[i])){
+                weight_t newValue = value[i] + distance[selected];
+                weight_t oldData = heap.Get(colIdx[i]);
+                if(newValue < oldData){
+                    heap.Update(colIdx[i], newValue);
+                }
             }
             else{
-                HeapNode data;
-                data.index = colIdx[i];
-                data.value = value[i] + result[selected];
-                HeapNode oldData = heap.Get(ticket[colIdx[i]]);
-                if(data.value < oldData.value){
-                    heap.Update(ticket[colIdx[i]], data);
-                }
+                heap.Insert(colIdx[i], value[i] + distance[selected]);
             }
         }
     }
 
-    delete[] ticket;
     delete[] visited;  
 }
