@@ -9,15 +9,19 @@
 //https://en.wikipedia.org/wiki/Sparse_Graphrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_forGraph)
 
 
-size_t CSRGraph::Size() const{
+dataSize_t CSRGraph::Size() const{
     return size;
 }
 
-CSRGraph::CSRGraph(size_t size, size_t* const rowPtr, size_t* const colIdx, weight_t* const value){
-    size_t nnz = rowPtr[size];
+dataSize_t CSRGraph::NEdge() const{
+    return rowPtr[size];
+}
+
+CSRGraph::CSRGraph(dataSize_t size, dataSize_t* const rowPtr, dataSize_t* const colIdx, weight_t* const value){
+    dataSize_t nnz = rowPtr[size];
     this->size = size;
-    this->rowPtr = new size_t[size + 1];
-    this->colIdx = new size_t[nnz];
+    this->rowPtr = new dataSize_t[size + 1];
+    this->colIdx = new dataSize_t[nnz];
     this->value = new weight_t[nnz];
     for(int i = 0; i <= size; ++i){
         this->rowPtr[i] = rowPtr[i];
@@ -29,14 +33,14 @@ CSRGraph::CSRGraph(size_t size, size_t* const rowPtr, size_t* const colIdx, weig
 }
 
 CSRGraph::CSRGraph(const CSRGraph& src){
-    size_t size = src.Size();
+    dataSize_t size = src.Size();
     this->size = size;
-    size_t nnz = src.RowPtr()[size];
-    rowPtr = new size_t[size];
-    colIdx = new size_t[nnz];
+    dataSize_t nnz = src.RowPtr()[size];
+    rowPtr = new dataSize_t[size];
+    colIdx = new dataSize_t[nnz];
     value = new weight_t[nnz];
-    size_t* srcRowPtr = src.RowPtr();
-    size_t* srcColIdx = src.ColIdx();
+    dataSize_t* srcRowPtr = src.RowPtr();
+    dataSize_t* srcColIdx = src.ColIdx();
     weight_t* srcVale = src.Value();
     for(int i = 0; i < size + 1; ++i){
         rowPtr[i] = srcRowPtr[i];
@@ -66,11 +70,11 @@ CSRGraph::~CSRGraph(){
     value = nullptr;
 }
 
-size_t* CSRGraph::RowPtr() const{
+dataSize_t* CSRGraph::RowPtr() const{
     return rowPtr;
 }
 
-size_t* CSRGraph::ColIdx() const{
+dataSize_t* CSRGraph::ColIdx() const{
     return colIdx;
 
 }
