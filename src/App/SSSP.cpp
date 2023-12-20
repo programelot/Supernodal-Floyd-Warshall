@@ -24,9 +24,9 @@ int main(int argc, char* argv[]){
     Graph g = MtxReader::Instance().Read(argv[1]);
 
     CSRGraph csr = Converter::Instance().ToCSR(g);
-    weight_t* result = nullptr;
+    weight_t* result = new weight_t[csr.Size()];
     start = clock();
-    SSSP(0, csr, &result);
+    SSSP(0, csr, result);
     finish = clock();
     
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
     if(!StringFunc::Instance().StrCmp(argv[2], "ignore")){
         std::ofstream reportFile;
         reportFile.open(argv[2]);
-        size_t N = g.Size();
+        dataSize_t N = g.Size();
         for(int i = 0; i < N ; ++i){
             std::string value = std::to_string(result[i]);
             reportFile.write(value.c_str(),value.size());
