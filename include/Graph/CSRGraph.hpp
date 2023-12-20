@@ -12,25 +12,26 @@
 
 class CSRGraph{
 private:
-    size_t* rowPtr = nullptr;
-    size_t* colIdx = nullptr;
+    dataSize_t* rowPtr = nullptr;
+    dataSize_t* colIdx = nullptr;
     weight_t* value = nullptr;
 
-    size_t size;
+    dataSize_t size;
 public:
     //Return size of the Graphrix.
-    size_t Size() const;
+    dataSize_t Size() const;
+    dataSize_t NEdge() const;
     int ID;
 
     //Basic operations
     //nnz = number of non-zero
-    CSRGraph(size_t size, size_t* const rowPtr, size_t* const colIdx, weight_t* const value);
+    CSRGraph(dataSize_t size, dataSize_t* const rowPtr, dataSize_t* const colIdx, weight_t* const value);
     CSRGraph(const CSRGraph& src);
     CSRGraph(CSRGraph&& src);
     ~CSRGraph();
     
-    size_t* RowPtr() const;
-    size_t* ColIdx() const;
+    dataSize_t* RowPtr() const;
+    dataSize_t* ColIdx() const;
     weight_t* Value() const;
 };
 

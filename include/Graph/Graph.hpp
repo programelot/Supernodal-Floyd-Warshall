@@ -38,16 +38,16 @@ public:
 class Graph{
 private:
     Vertex* vertices;
-    size_t size;
+    dataSize_t size;
 public:
-    Graph(size_t size);
+    Graph(dataSize_t size);
     Graph(Graph&& graph);
     ~Graph();
-    void Connect(size_t from, size_t to, weight_t value);
+    void Connect(dataSize_t from, dataSize_t to, weight_t value);
     //Remove unnecessary data
     void Shrink();
     Vertex* Vertices() const;
-    size_t Size() const;
+    dataSize_t Size() const;
 };
 
 #endif

@@ -20,9 +20,9 @@ int main(int argc, char* argv[]){
     CSRGraph csr = Converter::Instance().ToCSR(g);
 
     weight_t* result = nullptr;
-    APSP(csr, &result);
+    APSP(csr, result);
 
-    size_t N = g.Size();
+    dataSize_t N = g.Size();
     for(int i = 0; i < N ; ++i){
         if(result[i * N + i] < 0){
             printf("Negative cycle dectected\n");
