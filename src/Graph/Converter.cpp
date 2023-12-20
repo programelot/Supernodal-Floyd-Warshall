@@ -8,58 +8,7 @@
 #include "Graph/CSRGraph.hpp"
 #include <vector>
 #include "Common/DebugAssert.hpp"
-
-namespace{
-    template<typename T>
-    void swap(T& a, T&b){
-        T temp = a;
-        a = b;
-        b = temp;
-    }
-
-    //Quick sort + insert sort(In small cases)
-    void sort(size_t* key, weight_t* data, size_t length){
-        constexpr size_t kBubbleSortThreshHold = 16;
-        if(length < kBubbleSortThreshHold){
-            for(size_t i = 0; i < length; ++i){
-                size_t minimum = i;
-                for(size_t j = i + 1; j < length; ++j){
-                    if(key[minimum] > key[j])
-                        minimum = j;
-                }
-                if(i == minimum) continue;
-                swap(key[i], key[minimum]);
-                swap(data[i], data[minimum]);
-            }
-            return;
-        }
-        size_t pivot = key[0];
-        size_t LIdx = 1; //LeftIndex
-        size_t RIdx = length - 1; //RightIndex
-        while(true){
-            while(true){//Seek LeftReader that is bigger than pivot
-                if(key[LIdx] > pivot) break;
-                if(LIdx == RIdx) break;
-                ++LIdx;
-            }
-            while(true){//Seek RightReader that is smaller than pivot
-                if(key[RIdx] < pivot) break;
-                if(LIdx == RIdx) break;
-                --RIdx;
-            }
-            if(LIdx == RIdx) break; //CrossOverFinished
-            //Swap LIndex and RIndex
-            swap(key[LIdx], key[RIdx]);
-            swap(data[LIdx], data[RIdx]);
-        }
-        if(pivot > key[LIdx]){
-            swap(key[0], key[LIdx]);
-            swap(data[0], data[LIdx]);
-        }
-        sort(key, data, LIdx);
-        sort(key + LIdx, data + LIdx, length - LIdx);
-    }
-}
+#include "Common/SortCSRRow.hpp"
 
 Converter& Converter::Instance(){
     static Converter instance;
@@ -67,19 +16,19 @@ Converter& Converter::Instance(){
 }
 
 CSRGraph Converter::ToCSR(const Graph& g){
-    size_t size = g.Size();
+    dataSize_t size = g.Size();
     Vertex* vertices = g.Vertices();
-    size_t* rowPtr = new size_t[size + 1];
+    dataSize_t* rowPtr = new dataSize_t[size + 1];
     rowPtr[0] = 0;
     //Compute rowPtr size
     for(int i = 0; i < size; ++i){
         rowPtr[i + 1] = rowPtr[i] + vertices[i].Edges().size();
     }
-    size_t nnz = rowPtr[size];
-    size_t* colIdx = new size_t[nnz];
+    dataSize_t nnz = rowPtr[size];
+    dataSize_t* colIdx = new dataSize_t[nnz];
     weight_t* value = new weight_t[nnz];
     for(int i = 0; i < size; ++i){
-        size_t base = rowPtr[i];
+        dataSize_t base = rowPtr[i];
         const std::vector<Edge>& edges = vertices[i].Edges();
         for(int j = 0; j < edges.size(); ++j){
             //Vertices exists in sequence
@@ -89,9 +38,9 @@ CSRGraph Converter::ToCSR(const Graph& g){
         }
         if(edges.size() < 2) continue;
         //Sort colIdx, Value
-        sort(&colIdx[base], &value[base], edges.size());
-        for(size_t j = 0; j < edges.size() - 1; ++j){
-            AssertDebug(__FILE__, __LINE__,"No multigraph supports", colIdx[base + j] != colIdx[base + j + 1]);
+        SortCSRRow(&colIdx[base], &value[base], edges.size());
+        for(dataSize_t j = 0; j < edges.size() - 1; ++j){
+            DebugAssert(__FILE__, __LINE__,"No multigraph supports", colIdx[base + j] != colIdx[base + j + 1]);
         }
     }
     CSRGraph csr(size, rowPtr, colIdx, value);
