@@ -5,6 +5,6 @@
 #ifndef INCLUDE_DEBUGASSERT_HPP
 #define INCLUDE_DEBUGASSERT_HPP
 
-void AssertDebug(const char* file, int line, const char* message, bool test);
+void DebugAssert(const char* file, int line, const char* message, bool test);
 
 #endif

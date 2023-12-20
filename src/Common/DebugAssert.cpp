@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-void AssertDebug(const char* file, int line, const char* message, bool test){
+void DebugAssert(const char* file, int line, const char* message, bool test){
 
 #ifdef DEBUG
     if(test) return;

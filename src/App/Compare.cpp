@@ -18,11 +18,11 @@ int main(int argc, const char* argv[]){
     std::ifstream file1, file2;
     printf("Open file %s\n", argv[1]);
     file1.open(argv[1]);
-    AssertDebug(__FILE__, __LINE__,"File can not be opend", file1.is_open());
+    DebugAssert(__FILE__, __LINE__,"File can not be opend", file1.is_open());
 
     printf("Open file %s\n", argv[2]);
     file2.open(argv[2]);
-    AssertDebug(__FILE__, __LINE__,"File can not be opend", file2.is_open());
+    DebugAssert(__FILE__, __LINE__,"File can not be opend", file2.is_open());
 
     float error = 0;
     std::string value1, value2;
@@ -37,14 +37,6 @@ int main(int argc, const char* argv[]){
             printf("empty line deceted\n");
             break;
         }
-        // printf("%d : ", value1.size());
-        // for(int i = 0; i < value1.size(); i++){
-        //     printf("%d ", value1[i]);
-        // }printf(" // ");
-        // printf("%d : ", value2.size());
-        // for(int i = 0; i < value2.size(); i++){
-        //     printf("%d ", value2[i]);
-        // }printf("\n");
         if(StringFunc::Instance().StrCmp(value1, value2))
             continue;
         float f1 = std::stof(value1);
