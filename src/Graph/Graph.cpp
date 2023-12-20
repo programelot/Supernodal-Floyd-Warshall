@@ -33,7 +33,7 @@ void Vertex::Shrink(){
     edges.shrink_to_fit();
 }
 
-Graph::Graph(size_t size){
+Graph::Graph(dataSize_t size){
     this->size = size;
     vertices = new Vertex[size];
 }
@@ -48,7 +48,7 @@ Graph::~Graph(){
     if(vertices != nullptr)
         delete[] vertices;
 }
-void Graph::Connect(size_t from, size_t to, weight_t value){
+void Graph::Connect(dataSize_t from, dataSize_t to, weight_t value){
     vertices[from].Connect(vertices[to], value);
 }
 void Graph::Shrink(){
@@ -61,6 +61,6 @@ Vertex* Graph::Vertices() const{
     return vertices;
 }
 
-size_t Graph::Size() const{
+dataSize_t Graph::Size() const{
     return size;
 }
