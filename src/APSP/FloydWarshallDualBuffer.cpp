@@ -17,38 +17,57 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
     dataSize_t* rowPtr = input_graph.RowPtr();
     dataSize_t* colIdx = input_graph.ColIdx();
     weight_t* value = input_graph.Value();
-    weight_t* result[2] = {new weight_t[size * size], new weight_t[size * size]};
+    weight_t* result[2];
+    result[size % 2] = distance;
+    result[(size + 1) % 2] = new weight_t[size * size];
 
     for(dataSize_t i = 0; i < size ; ++i){
         for(dataSize_t j = 0; j < size; ++j){
-            result[0][i * size + j] = kWeightInf;
+            for(dataSize_t k = 0; k < 2; ++k){
+                result[k][i * size + j] = kWeightInf;
+            }
         }
     }
 
     for(dataSize_t i = 0; i < size; ++i){
-        result[0][i * size + i] = 0;
+        for(dataSize_t k = 0; k < 2; ++k){
+            result[k][i * size + i] = 0;
+        }
     }
 
     for(dataSize_t i = 0; i < size; ++i){
         for(dataSize_t j = rowPtr[i]; j < rowPtr[i + 1]; ++j){
-            result[0][i * size + colIdx[j]] = value[j];
+            for(dataSize_t k = 0; k < 2; ++k){
+                result[k][i * size + colIdx[j]] = value[j];
+            }
         }
     }
     
     // int nested = omp_get_nested();
     // omp_set_nested(1);
     for(dataSize_t k = 0; k < size; ++k){
+        int now = k % 2;
+        int next = (k + 1) % 2;
         #pragma omp parallel
         {
             #pragma omp for
             for(dataSize_t i = 0; i < size; ++i){
+                if((result[now][i * size + k] == kWeightInf))
+                    continue;
                 // #pragma omp parallel
                 // {
                 //     #pragma omp for
                         for(dataSize_t j = 0; j < size; ++j){
-                            weight_t oldValue = result[k % 2][i * size + j];
-                            weight_t newValue = result[k % 2][i * size + k] + result[k % 2][k * size + j];
-                            result[(k + 1) % 2][i * size + j] = (oldValue > newValue) ? newValue : oldValue;
+                            if(result[now][k * size + j] == kWeightInf)
+                                continue;
+                            weight_t oldValue = result[now][i * size + j];
+                            weight_t newValue = result[now][i * size + k] + result[now][k * size + j];
+                            // result[next][i * size + j] = (oldValue > newValue) ? newValue : oldValue;
+                            if(newValue > oldValue)
+                                newValue = oldValue;
+                            oldValue = result[next][i * size + j];
+                            if(oldValue > newValue)
+                                result[next][i * size + j] = newValue;
                         }
                 // }
             }
@@ -56,10 +75,5 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
     }
     // omp_set_nested(nested);
 
-    for(dataSize_t i = 0; i < size; ++i){
-        for(dataSize_t j = 0; j < size; ++j){
-            distance[i * size + j] = result[size % 2][i * size + j];
-        }
-    }
     delete[] result[(size + 1) % 2];
 }

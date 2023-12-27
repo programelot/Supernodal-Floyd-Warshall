@@ -12,6 +12,7 @@
 #include "Matrix/MtxReader.hpp"
 #include "Algorithm/APSP.hpp"
 #include "Common/StringFunc.hpp"
+#include "Common/DebugAssert.hpp"
 
 int main(int argc, char* argv[]){
     if(argc != 3){
@@ -34,6 +35,7 @@ int main(int argc, char* argv[]){
     if(!StringFunc::Instance().StrCmp(argv[2], "ignore")){
         std::ofstream reportFile;
         reportFile.open(argv[2]);
+        DebugAssert(__FILE__, __LINE__,"File can not be opend", reportFile.is_open());
         for(int i = 0; i < 3; ++i){
             reportFile.write(argv[i], sizeof(argv[i])/sizeof(char));
             reportFile.write(" ", 1);

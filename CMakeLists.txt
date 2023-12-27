@@ -34,20 +34,23 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 ## Common
 add_library(StringFunc ${SRC_ROOT}/Common/StringFunc.cpp)
 add_library(DebugAssert ${SRC_ROOT}/Common/DebugAssert.cpp)
-add_library(SortCSRRow ${SRC_ROOT}/Common/SortCSRRow.cpp)
+
+## Image
+add_library(BMP ${SRC_ROOT}/Image/BMP.cpp)
 
 ## Heap
 add_library(BinaryHeap ${SRC_ROOT}/Heap/BinaryHeap.cpp)
 target_link_libraries(BinaryHeap DebugAssert)
 
 ## Graph
+add_library(SortCSRRow ${SRC_ROOT}/Graph/SortCSRRow.cpp)
 add_library(CSRGraph ${SRC_ROOT}/Graph/CSRGraph.cpp)
 add_library(Graph ${SRC_ROOT}/Graph/Graph.cpp)
 add_library(Converter ${SRC_ROOT}/Graph/Converter.cpp)
 target_link_libraries(Converter DebugAssert SortCSRRow)
 
 ## Supernod
-#add_library(ETree ${SRC_ROOT}/ETree/ETree.cpp)
+add_library(ETree ${SRC_ROOT}/ETree/ETree.cpp)
 
 ## Matrix
 add_library(MtxReader ${SRC_ROOT}/Matrix/MtxReader.cpp)
@@ -70,25 +73,39 @@ target_link_libraries(Dijkstra-APSP CSRGraph Dijkstra-SSSP)
 add_library(FloydWarshall ${SRC_ROOT}/APSP/FloydWarshall.cpp)
 target_link_libraries(FloydWarshall CSRGraph)
 
+add_library(FloydWarshallCompressive ${SRC_ROOT}/APSP/FloydWarshallCompressive.cpp)
+target_link_libraries(FloydWarshallCompressive CSRGraph)
+
 add_library(FloydWarshallDualBuffer ${SRC_ROOT}/APSP/FloydWarshallDualBuffer.cpp)
 target_link_libraries(FloydWarshallDualBuffer CSRGraph)
+
+add_library(FloydWarshallDualCompressive ${SRC_ROOT}/APSP/FloydWarshallDualCompressive.cpp)
+target_link_libraries(FloydWarshallDualCompressive CSRGraph)
+
+add_library(FloydWarshallDualCompInOut ${SRC_ROOT}/APSP/FloydWarshallDualCompInOut.cpp)
+target_link_libraries(FloydWarshallDualCompInOut CSRGraph)
 
 add_library(BlockedFloydWarshall ${SRC_ROOT}/APSP/BlockedFloydWarshall.cpp)
 target_link_libraries(BlockedFloydWarshall CSRGraph)
 
+add_library(BlockedFloydWarshallCompressive ${SRC_ROOT}/APSP/BlockedFloydWarshallCompressive.cpp)
+target_link_libraries(BlockedFloydWarshallCompressive CSRGraph)
+
 add_library(Johnson ${SRC_ROOT}/APSP/Johnson.cpp)
 target_link_libraries(Johnson CSRGraph BinaryHeap)
 
-#add_library(SupernodalFloydWarshall ${SRC_ROOT}/APSP/SupernodalFloydWarshall.cpp)
-#target_link_libraries(SupernodalFloydWarshall ETree)
+add_library(SupernodalFloydWarshall ${SRC_ROOT}/APSP/SupernodalFloydWarshall.cpp)
+target_link_libraries(SupernodalFloydWarshall ETree)
 
-#Applications
+# Applications
+## SSSP
 add_executable(SSSP_Bellman ${SRC_ROOT}/App/SSSP.cpp)
 target_link_libraries(SSSP_Bellman CSRGraph Graph Converter MtxReader Bellman-Ford-SSSP StringFunc)
 
 add_executable(SSSP_Dijkstra ${SRC_ROOT}/App/SSSP.cpp)
 target_link_libraries(SSSP_Dijkstra CSRGraph Graph Converter MtxReader  Dijkstra-SSSP StringFunc)
 
+##APSP
 add_executable(APSP_Bellman ${SRC_ROOT}/App/APSP.cpp)
 target_link_libraries(APSP_Bellman CSRGraph Graph Converter MtxReader Bellman-Ford-APSP StringFunc)
 
@@ -101,20 +118,36 @@ target_link_libraries(APSP_Johnson CSRGraph Graph Converter MtxReader Johnson St
 add_executable(APSP_FloydWarshall ${SRC_ROOT}/App/APSP.cpp)
 target_link_libraries(APSP_FloydWarshall CSRGraph Graph Converter MtxReader FloydWarshall StringFunc)
 
+add_executable(APSP_FloydWarshallCompressive ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_FloydWarshallCompressive CSRGraph Graph Converter MtxReader FloydWarshallCompressive StringFunc)
+
 add_executable(APSP_FloydWarshallDualBuffer ${SRC_ROOT}/App/APSP.cpp)
 target_link_libraries(APSP_FloydWarshallDualBuffer CSRGraph Graph Converter MtxReader FloydWarshallDualBuffer StringFunc)
+
+add_executable(APSP_FloydWarshallDualCompressive ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_FloydWarshallDualCompressive CSRGraph Graph Converter MtxReader FloydWarshallDualCompressive StringFunc)
+
+add_executable(APSP_FloydWarshallDualCompInOut ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_FloydWarshallDualCompInOut CSRGraph Graph Converter MtxReader FloydWarshallDualCompInOut StringFunc)
 
 add_executable(APSP_BlockedFloydWarshall ${SRC_ROOT}/App/APSP.cpp)
 target_link_libraries(APSP_BlockedFloydWarshall CSRGraph Graph Converter MtxReader BlockedFloydWarshall StringFunc)
 
-#add_executable(APSP_SupernodalFloydWarshall ${SRC_ROOT}/App/APSP.cpp)
-#target_link_libraries(APSP_SupernodalFloydWarshall CSRGraph Graph Converter MtxReader SupernodalFloydWarshall StringFunc)
+add_executable(APSP_BlockedFloydWarshallCompressive ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_BlockedFloydWarshallCompressive CSRGraph Graph Converter MtxReader BlockedFloydWarshallCompressive StringFunc)
 
+add_executable(APSP_SupernodalFloydWarshall ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_SupernodalFloydWarshall CSRGraph Graph Converter MtxReader SupernodalFloydWarshall StringFunc)
+
+## Tools
 add_executable(Compare ${SRC_ROOT}/App/Compare.cpp)
 target_link_libraries(Compare StringFunc DebugAssert)
 
 add_executable(NegativeCycleCheck ${SRC_ROOT}/App/NegativeCycleCheck.cpp)
 target_link_libraries(NegativeCycleCheck CSRGraph Graph Converter MtxReader Bellman-Ford-APSP)
+
+add_executable(PrintETree ${SRC_ROOT}/App/PrintETree.cpp)
+target_link_libraries(PrintETree CSRGraph Graph Converter ETree MtxReader BMP)
 
 IF (${USE_THREAD} STREQUAL "Y")
     add_definitions(-DUSE_THREAD)
@@ -124,6 +157,7 @@ IF (${USE_THREAD} STREQUAL "Y")
 ELSE()
 ENDIF (${CMAKE_BUILD_TYPE} STREQUAL "Y")
 
+add_compile_definitions(-O3)
 IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     add_compile_definitions(-g)
     add_definitions(-DDEBUG)

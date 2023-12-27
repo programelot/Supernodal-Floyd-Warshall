@@ -8,7 +8,7 @@
 #include "Graph/CSRGraph.hpp"
 #include <vector>
 #include "Common/DebugAssert.hpp"
-#include "Common/SortCSRRow.hpp"
+#include "Graph/SortCSRRow.hpp"
 
 Converter& Converter::Instance(){
     static Converter instance;

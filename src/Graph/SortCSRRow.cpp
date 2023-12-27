@@ -1,4 +1,4 @@
-#include "Common/SortCSRRow.hpp"
+#include "Graph/SortCSRRow.hpp"
 #include "Common/Type.hpp"
 
 namespace{
