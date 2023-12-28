@@ -79,12 +79,6 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
     dataSize_t* colIdxPerm = permGraph.ColIdx();
     weight_t* valuePerm = permGraph.Value();
 
-    for(dataSize_t i = 0; i < size; ++i){
-        for(dataSize_t j = rowPtrPerm[i]; j < rowPtrPerm[i + 1]; ++j){
-            permDistance[i * size + colIdxPerm[j]] = valuePerm[j];
-        }
-    }
-
     int nested = omp_get_nested();
     omp_set_nested(1);
 
@@ -103,6 +97,42 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
     dataSize_t* inEdgeNum = new dataSize_t[size * numSupernodes];
     dataSize_t* outEdge = new dataSize_t[size * size];
     dataSize_t* outEdgeNum = new dataSize_t[size * numSupernodes];
+    
+    for(dataSize_t i = 0; i < size; ++i){
+        for(dataSize_t j = 0; j < numSupernodes; ++j){
+            inEdgeNum[i * numSupernodes + j] = 0;
+            outEdgeNum[i * numSupernodes + j] = 0;
+        }
+    }
+
+    {
+        //Invermap from vertex index to supernode index
+        dataSize_t* nodeMap = new dataSize_t[size];
+        for(dataSize_t i = 0; i < numSupernodes; ++i){
+            for(dataSize_t j = supernodes[i].from; j < supernodes[i].to; ++j){
+                nodeMap[j] = i;
+            }
+        }
+
+        dataSize_t inNodeIdx = 0;
+        dataSize_t outNodeIdx = 0;
+        for(dataSize_t i = 0; i < size; ++i){
+            inNodeIdx = nodeMap[i];
+            for(dataSize_t j = rowPtrPerm[i]; j < rowPtrPerm[i + 1]; ++j){
+                dataSize_t to = colIdxPerm[j];
+                permDistance[i * size + to] = valuePerm[j];
+
+                outNodeIdx = nodeMap[to];
+                
+                inEdge[to * size + supernodes[inNodeIdx].from + inEdgeNum[to * numSupernodes + inNodeIdx]]= i;
+                ++inEdgeNum[to * numSupernodes + inNodeIdx];
+                outEdge[i * size + supernodes[outNodeIdx].from + outEdgeNum[i * numSupernodes + outNodeIdx]]= to;
+                ++outEdgeNum[i * numSupernodes + outNodeIdx];
+            }
+        }
+        delete[] nodeMap;
+    }
+
 
     std::vector<std::vector<dataSize_t>> ancestors; // Ancestors
     std::vector<std::vector<dataSize_t>> descendants; // Descendants
