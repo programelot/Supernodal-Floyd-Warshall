@@ -195,7 +195,6 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
                                     UpdateBlock(permDistance, size, ancestors[i][j - numDec], descendants[i][k], i, supernodes);
                                 }
                                 else{
-                                    //TODO: Need to control the collision
                                     UpdateBlock(permDistance, size, ancestors[i][j - numDec], ancestors[i][k - numDec], i, supernodes, 
                                         &locks[ancestors[i][j - numDec] * numSupernodes + ancestors[i][k - numDec]]);
                                 }

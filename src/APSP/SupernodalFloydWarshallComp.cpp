@@ -176,7 +176,14 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
 
     dataSize_t maxDepth = depthIndex.size() - 2;
     for(dataSize_t depth = maxDepth; depth >= 0; --depth){
-
+        // printf("=================================================\n");
+        // printf("Depth : %d\n", depth);
+        // printf("Diagonal update : %d\n", depthIndex[depth + 1] - depthIndex[depth]);
+        // for(dataSize_t i = depthIndex[depth]; i < depthIndex[depth + 1]; ++i){
+        //     dataSize_t numDec = descendants[i].size();
+        //     dataSize_t numAns = ancestors[i].size();
+        //     printf("Pane/Minplus update : %d\n", numDec + numAns);
+        // }
         //Diagonal Update
         {
             #pragma omp parallel
@@ -247,7 +254,6 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
                                         inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                                 }
                                 else{
-                                    //TODO: Need to control the collision
                                     UpdateBlock(permDistance, size, ancestors[i][j - numDec], ancestors[i][k - numDec], i, supernodes, 
                                         &locks[ancestors[i][j - numDec] * numSupernodes + ancestors[i][k - numDec]],
                                         inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
