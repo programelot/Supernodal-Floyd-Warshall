@@ -130,8 +130,8 @@ ETree::ETree(const CSRGraph& input_graph, dataSize_t clearAreaThreshold, dataSiz
                 ++thisDepthSize;
                 supernodes.emplace_back(cutPointA, cutPointB, size, size, i);
                 supernodes[i].right = thisDepthSize + depthIndex[depth + 1];
-                supernodes[i].from = cutPointB;
                 ++thisDepthSize;
+                supernodes[i].from = cutPointB;
             }
         }
         if(thisDepthSize == 0)
