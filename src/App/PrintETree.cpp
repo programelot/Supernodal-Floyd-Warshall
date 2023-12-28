@@ -119,7 +119,7 @@ int main(int argc, char* argv[]){
         }
     }
     
-    ETree eTree(csr);
+    ETree eTree(csr, 0, 16, 100);
     const dataSize_t* perm = eTree.Perm();
     const dataSize_t* iperm = eTree.IPerm();
     const CSRGraph& csrPerm = eTree.PermGraph();

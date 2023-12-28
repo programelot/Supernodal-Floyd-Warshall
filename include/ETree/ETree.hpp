@@ -36,7 +36,7 @@ public:
     const std::vector<Supernode>& const Supernodes() const;
     const std::vector<dataSize_t>& const DepthIndex() const;
     const CSRGraph& const PermGraph() const;
-    ETree(const CSRGraph& input_graph);
+    ETree(const CSRGraph& input_graph, dataSize_t clearAreaThreshold, dataSize_t blocksizeThreshold, dataSize_t eTreeDepthMax);
     ~ETree();
 };
 

@@ -14,35 +14,44 @@
 
 namespace{
 
-    void UpdateBlock(weight_t* distance, dataSize_t size, dataSize_t bI, dataSize_t bJ, dataSize_t bK, const std::vector<Supernode>& supernodes){
-        dataSize_t fromI = supernodes[bI].from;
-        dataSize_t toI = supernodes[bI].to;
-        dataSize_t fromJ = supernodes[bJ].from;
-        dataSize_t toJ = supernodes[bJ].to;
+    void UpdateBlock(weight_t* distance, dataSize_t size, dataSize_t bI, dataSize_t bJ, dataSize_t bK, const std::vector<Supernode>& supernodes,
+                    dataSize_t* inEdge, dataSize_t* inEdgeNum,
+                    dataSize_t* outEdge, dataSize_t* outEdgeNum,
+                    dataSize_t numSupernodes){
         dataSize_t fromK = supernodes[bK].from;
         dataSize_t toK = supernodes[bK].to;
-        toI = toI < size ? toI : size;
-        toJ = toJ < size ? toJ : size;
         toK = toK < size ? toK : size;
         for(dataSize_t k = fromK; k < toK; ++ k){
-            for(dataSize_t i = fromI; i < toI; ++i){
-                if((distance[i * size + k] == kWeightInf))
-                    continue;
-                for(dataSize_t j = fromJ; j < toJ; ++j){
-                    if(distance[k * size + j] == kWeightInf)
-                        continue;
-                    weight_t oldValue = distance[i * size + j];
-                    weight_t newValue = distance[i * size + k] + distance[k * size + j];
-                    if(oldValue > newValue)
-                        distance[i * size + j] = newValue;
+            dataSize_t inEdgeNumOrg = inEdgeNum[k * numSupernodes + bI];
+            dataSize_t outEdgeNumOrg = outEdgeNum[k * numSupernodes + bJ];
+            dataSize_t fromBase = k * size + supernodes[bI].from;
+            dataSize_t toBase = k * size + supernodes[bJ].from;
+            for(dataSize_t i = 0; i < inEdgeNumOrg; ++i){
+                for(dataSize_t j = 0; j < outEdgeNumOrg; ++j){
+                    dataSize_t from = inEdge[fromBase + i];
+                    dataSize_t to = outEdge[toBase + j];
+                    weight_t oldValue = distance[from * size + to];
+                    weight_t newValue = distance[from * size + k] + distance[k * size + to];
+                    if(oldValue > newValue){
+                        if(oldValue == kWeightInf){
+                            outEdge[from * size + supernodes[bJ].from + outEdgeNum[from * numSupernodes + bJ]] = to;
+                            ++outEdgeNum[from * numSupernodes + bJ];
+                            inEdge[to * size + supernodes[bI].from  + inEdgeNum[to * numSupernodes + bI]] = from;
+                            ++inEdgeNum[to * numSupernodes + bI];
+                        }
+                        distance[from * size + to] = newValue;
+                    }
                 }   
             }
         }
     }
 
-    void UpdateBlock(weight_t* distance, dataSize_t size, dataSize_t bI, dataSize_t bJ, dataSize_t bK, const std::vector<Supernode>& supernodes, omp_lock_t* lock){
+    void UpdateBlock(weight_t* distance, dataSize_t size, dataSize_t bI, dataSize_t bJ, dataSize_t bK, const std::vector<Supernode>& supernodes, omp_lock_t* lock,
+                    dataSize_t* inEdge, dataSize_t* inEdgeNum,
+                    dataSize_t* outEdge, dataSize_t* outEdgeNum,
+                    dataSize_t numSupernodes){
         omp_set_lock(lock);
-        UpdateBlock(distance, size, bI, bJ, bK, supernodes);
+        UpdateBlock(distance, size, bI, bJ, bK, supernodes, inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
         omp_unset_lock(lock);
     }
 }
@@ -89,6 +98,11 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
     for(dataSize_t i = 0; i < numSupernodes * numSupernodes; ++i){
         omp_init_lock(&locks[i]);
     }
+
+    dataSize_t* inEdge = new dataSize_t[size * size];
+    dataSize_t* inEdgeNum = new dataSize_t[size * numSupernodes];
+    dataSize_t* outEdge = new dataSize_t[size * size];
+    dataSize_t* outEdgeNum = new dataSize_t[size * numSupernodes];
 
     std::vector<std::vector<dataSize_t>> ancestors; // Ancestors
     std::vector<std::vector<dataSize_t>> descendants; // Descendants
@@ -139,7 +153,8 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
             {
                 #pragma omp for
                 for(dataSize_t i = depthIndex[depth]; i < depthIndex[depth + 1]; ++i){
-                    UpdateBlock(permDistance, size, i, i, i, supernodes);
+                    UpdateBlock(permDistance, size, i, i, i, supernodes,
+                        inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                 }
             }
         }
@@ -156,12 +171,16 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
                     #pragma omp for
                     for(dataSize_t j = 0; j < numDec + numAns; ++j){
                         if(j < numDec){    
-                            UpdateBlock(permDistance, size, descendants[i][j], i, i, supernodes);
-                            UpdateBlock(permDistance, size, i, descendants[i][j], i, supernodes);
+                            UpdateBlock(permDistance, size, descendants[i][j], i, i, supernodes,
+                                inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
+                            UpdateBlock(permDistance, size, i, descendants[i][j], i, supernodes,
+                                inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                         }
                         else{
-                            UpdateBlock(permDistance, size, ancestors[i][j - numDec], i, i, supernodes);
-                            UpdateBlock(permDistance, size, i, ancestors[i][j - numDec], i, supernodes);
+                            UpdateBlock(permDistance, size, ancestors[i][j - numDec], i, i, supernodes,
+                                inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
+                            UpdateBlock(permDistance, size, i, ancestors[i][j - numDec], i, supernodes,
+                                inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                         }
                     }
                 }
@@ -182,22 +201,26 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
                         if(j < numDec){    
                             for(dataSize_t k = 0; k < numDec + numAns; ++k){
                                 if(k < numDec){    
-                                    UpdateBlock(permDistance, size, descendants[i][j], descendants[i][k], i, supernodes);
+                                    UpdateBlock(permDistance, size, descendants[i][j], descendants[i][k], i, supernodes,
+                                        inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                                 }
                                 else{
-                                    UpdateBlock(permDistance, size, descendants[i][j], ancestors[i][k - numDec], i, supernodes);
+                                    UpdateBlock(permDistance, size, descendants[i][j], ancestors[i][k - numDec], i, supernodes,
+                                        inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                                 }
                             }
                         }
                         else{
                             for(dataSize_t k = 0; k < numDec + numAns; ++k){
                                 if(k < numDec){    
-                                    UpdateBlock(permDistance, size, ancestors[i][j - numDec], descendants[i][k], i, supernodes);
+                                    UpdateBlock(permDistance, size, ancestors[i][j - numDec], descendants[i][k], i, supernodes,
+                                        inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                                 }
                                 else{
                                     //TODO: Need to control the collision
                                     UpdateBlock(permDistance, size, ancestors[i][j - numDec], ancestors[i][k - numDec], i, supernodes, 
-                                        &locks[ancestors[i][j - numDec] * numSupernodes + ancestors[i][k - numDec]]);
+                                        &locks[ancestors[i][j - numDec] * numSupernodes + ancestors[i][k - numDec]],
+                                        inEdge, inEdgeNum, outEdge, outEdgeNum, numSupernodes);
                                 }
                             }
                         }
@@ -220,4 +243,9 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
         }
     }
     delete[] permDistance;
+
+    delete[] inEdge;
+    delete[] inEdgeNum;
+    delete[] outEdge;
+    delete[] outEdgeNum;
 }

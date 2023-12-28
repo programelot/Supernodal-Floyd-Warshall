@@ -50,12 +50,10 @@ namespace{
                     weight_t newValue = distance[from * size + k] + distance[k * size + to];
                     if(oldValue > newValue){
                         if(oldValue == kWeightInf){
-                            dataSize_t fromBlk = from/blockSize;
-                            dataSize_t toBlk = to/blockSize;
-                            outEdge[from * size + toBlk * blockSize + outEdgeNum[from * numBlocks + toBlk]] = to;
-                            ++outEdgeNum[from * numBlocks + toBlk];
-                            inEdge[to * size + fromBlk * blockSize  + inEdgeNum[to * numBlocks + fromBlk]] = from;
-                            ++inEdgeNum[to * numBlocks + fromBlk];
+                            outEdge[from * size + bJ * blockSize + outEdgeNum[from * numBlocks + bJ]] = to;
+                            ++outEdgeNum[from * numBlocks + bJ];
+                            inEdge[to * size + bI * blockSize  + inEdgeNum[to * numBlocks + bI]] = from;
+                            ++inEdgeNum[to * numBlocks + bI];
                         }
                         distance[from * size + to] = newValue;
                     }

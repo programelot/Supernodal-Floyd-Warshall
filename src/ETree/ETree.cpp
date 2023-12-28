@@ -18,12 +18,7 @@ Supernode::Supernode(dataSize_t from, dataSize_t to, dataSize_t left, dataSize_t
     this->parent = parent;
 }
 
-ETree::ETree(const CSRGraph& input_graph){
-
-    //Minimum size of clear area to construct tree.
-    constexpr dataSize_t clearAreaThreshold = 0;
-    constexpr dataSize_t blocksizeThreshold = 16;//32;
-    constexpr dataSize_t eTreeDepthMax = 50;
+ETree::ETree(const CSRGraph& input_graph, dataSize_t clearAreaThreshold, dataSize_t blocksizeThreshold, dataSize_t eTreeDepthMax){
 
     int size = input_graph.Size();
     dataSize_t nnz = input_graph.NEdge();

@@ -97,6 +97,9 @@ target_link_libraries(Johnson CSRGraph BinaryHeap)
 add_library(SupernodalFloydWarshall ${SRC_ROOT}/APSP/SupernodalFloydWarshall.cpp)
 target_link_libraries(SupernodalFloydWarshall ETree)
 
+add_library(SupernodalFloydWarshallComp ${SRC_ROOT}/APSP/SupernodalFloydWarshallComp.cpp)
+target_link_libraries(SupernodalFloydWarshallComp ETree)
+
 # Applications
 ## SSSP
 add_executable(SSSP_Bellman ${SRC_ROOT}/App/SSSP.cpp)
@@ -138,6 +141,9 @@ target_link_libraries(APSP_BlockedFloydWarshallCompressive CSRGraph Graph Conver
 
 add_executable(APSP_SupernodalFloydWarshall ${SRC_ROOT}/App/APSP.cpp)
 target_link_libraries(APSP_SupernodalFloydWarshall CSRGraph Graph Converter MtxReader SupernodalFloydWarshall StringFunc)
+
+add_executable(APSP_SupernodalFloydWarshallComp ${SRC_ROOT}/App/APSP.cpp)
+target_link_libraries(APSP_SupernodalFloydWarshallComp CSRGraph Graph Converter MtxReader SupernodalFloydWarshallComp StringFunc)
 
 ## Tools
 add_executable(Compare ${SRC_ROOT}/App/Compare.cpp)
