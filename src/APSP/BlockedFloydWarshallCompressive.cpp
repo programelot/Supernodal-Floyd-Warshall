@@ -103,9 +103,9 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
     }
 
     for(dataSize_t i = 0; i < size; ++i){
+        dataSize_t inBlockIdx = i/blockSize;
         for(dataSize_t j = rowPtr[i]; j < rowPtr[i + 1]; ++j){
             dataSize_t to = colIdx[j];
-            dataSize_t inBlockIdx = i/blockSize;
             dataSize_t outBlockIdx = to/blockSize;
 
             distance[i * size + to] = value[j];
