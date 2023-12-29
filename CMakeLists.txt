@@ -158,10 +158,7 @@ target_link_libraries(PrintETree CSRGraph Graph Converter ETree MtxReader BMP)
 IF (${USE_THREAD} STREQUAL "Y")
     add_definitions(-DUSE_THREAD)
     add_definitions(-openmp)
-
-    target_link_libraries(NegativeCycleCheck CSRGraph Graph Converter MtxReader FloydWarshall)
-ELSE()
-ENDIF (${CMAKE_BUILD_TYPE} STREQUAL "Y")
+ENDIF (${USE_THREAD} STREQUAL "Y")
 
 add_compile_definitions(-O3)
 IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
