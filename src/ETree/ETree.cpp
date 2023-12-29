@@ -6,7 +6,7 @@
 #include "Graph/CSRGraph.hpp"
 #include "ETree/Etree.hpp"
 #include "Common/DebugAssert.hpp"
-#include "Graph/SortCSRRow.hpp"
+//#include "Graph/SortCSRRow.hpp"
 #include <metis.h>
 #include <vector>
 
@@ -30,7 +30,10 @@ ETree::ETree(const CSRGraph& input_graph, dataSize_t clearAreaThreshold, dataSiz
     perm  = new dataSize_t[size];
     iperm = new dataSize_t[size];
     
-    int resultND = METIS_NodeND(&size,rowPtr,colIdx,NULL,NULL,perm,iperm);
+    idx_t options[METIS_NOPTIONS];
+    METIS_SetDefaultOptions(options);
+    options[METIS_OPTION_NSEPS] = 1;
+    int resultND = METIS_NodeND(&size,rowPtr,colIdx,NULL,options,perm,iperm);
     DebugAssert(__FILE__, __LINE__, "Metis nested dissection failed", resultND == METIS_OK);
 
     //Permutate csr with iperm
@@ -49,7 +52,8 @@ ETree::ETree(const CSRGraph& input_graph, dataSize_t clearAreaThreshold, dataSiz
                 colIdxPerm[base + j] = iperm[colIdx[baseOrg + j]];
                 valuePerm[base + j] = value[baseOrg + j];
             }
-            SortCSRRow(&colIdxPerm[base], &valuePerm[base], colSizeOrg);
+            //Not essential
+            //SortCSRRow(&colIdxPerm[base], &valuePerm[base], colSizeOrg);
             base = rowPtrPerm[i + 1];
         }
     }

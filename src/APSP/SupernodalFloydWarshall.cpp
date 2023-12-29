@@ -21,18 +21,17 @@ namespace{
         dataSize_t toJ = supernodes[bJ].to;
         dataSize_t fromK = supernodes[bK].from;
         dataSize_t toK = supernodes[bK].to;
-        toI = toI < size ? toI : size;
-        toJ = toJ < size ? toJ : size;
-        toK = toK < size ? toK : size;
         for(dataSize_t k = fromK; k < toK; ++ k){
             for(dataSize_t i = fromI; i < toI; ++i){
-                if((distance[i * size + k] == kWeightInf))
+                weight_t inValue = distance[i * size + k];
+                if(inValue == kWeightInf)
                     continue;
                 for(dataSize_t j = fromJ; j < toJ; ++j){
-                    if(distance[k * size + j] == kWeightInf)
+                    weight_t outValue = distance[k * size + j];
+                    if(outValue == kWeightInf)
                         continue;
                     weight_t oldValue = distance[i * size + j];
-                    weight_t newValue = distance[i * size + k] + distance[k * size + j];
+                    weight_t newValue = inValue + outValue;
                     if(oldValue > newValue)
                         distance[i * size + j] = newValue;
                 }   
@@ -132,7 +131,6 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
 
     dataSize_t maxDepth = depthIndex.size() - 2;
     for(dataSize_t depth = maxDepth; depth >= 0; --depth){
-
         //Diagonal Update
         {
             #pragma omp parallel
@@ -149,19 +147,21 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
         {
             #pragma omp for
             for(dataSize_t i = depthIndex[depth]; i < depthIndex[depth + 1]; ++i){
-                dataSize_t numDec = descendants[i].size();
-                dataSize_t numAns = ancestors[i].size();
+                std::vector<dataSize_t>& ances = ancestors[i];
+                std::vector<dataSize_t>& desce = descendants[i];
+                dataSize_t numDec = desce.size();
+                dataSize_t numAns = ances.size();
                 #pragma omp parallel
                 {
                     #pragma omp for
                     for(dataSize_t j = 0; j < numDec + numAns; ++j){
                         if(j < numDec){    
-                            UpdateBlock(permDistance, size, descendants[i][j], i, i, supernodes);
-                            UpdateBlock(permDistance, size, i, descendants[i][j], i, supernodes);
+                            UpdateBlock(permDistance, size, desce[j], i, i, supernodes);
+                            UpdateBlock(permDistance, size, i, desce[j], i, supernodes);
                         }
                         else{
-                            UpdateBlock(permDistance, size, ancestors[i][j - numDec], i, i, supernodes);
-                            UpdateBlock(permDistance, size, i, ancestors[i][j - numDec], i, supernodes);
+                            UpdateBlock(permDistance, size, ances[j - numDec], i, i, supernodes);
+                            UpdateBlock(permDistance, size, i, ances[j - numDec], i, supernodes);
                         }
                     }
                 }
@@ -173,8 +173,10 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
         {
             #pragma omp for
             for(dataSize_t i = depthIndex[depth]; i < depthIndex[depth + 1]; ++i){
-                dataSize_t numDec = descendants[i].size();
-                dataSize_t numAns = ancestors[i].size();
+                std::vector<dataSize_t>& ances = ancestors[i];
+                std::vector<dataSize_t>& desce = descendants[i];
+                dataSize_t numDec = desce.size();
+                dataSize_t numAns = ances.size();
                 #pragma omp parallel
                 {
                     #pragma omp for
@@ -182,21 +184,21 @@ void APSP(const CSRGraph& input_graph, weight_t* distance){
                         if(j < numDec){    
                             for(dataSize_t k = 0; k < numDec + numAns; ++k){
                                 if(k < numDec){    
-                                    UpdateBlock(permDistance, size, descendants[i][j], descendants[i][k], i, supernodes);
+                                    UpdateBlock(permDistance, size, desce[j], desce[k], i, supernodes);
                                 }
                                 else{
-                                    UpdateBlock(permDistance, size, descendants[i][j], ancestors[i][k - numDec], i, supernodes);
+                                    UpdateBlock(permDistance, size, desce[j], ances[k - numDec], i, supernodes);
                                 }
                             }
                         }
                         else{
                             for(dataSize_t k = 0; k < numDec + numAns; ++k){
                                 if(k < numDec){    
-                                    UpdateBlock(permDistance, size, ancestors[i][j - numDec], descendants[i][k], i, supernodes);
+                                    UpdateBlock(permDistance, size, ances[j - numDec], desce[k], i, supernodes);
                                 }
                                 else{
-                                    UpdateBlock(permDistance, size, ancestors[i][j - numDec], ancestors[i][k - numDec], i, supernodes, 
-                                        &locks[ancestors[i][j - numDec] * numSupernodes + ancestors[i][k - numDec]]);
+                                    UpdateBlock(permDistance, size, ances[j - numDec], ances[k - numDec], i, supernodes, 
+                                        &locks[ances[j - numDec] * numSupernodes + ances[k - numDec]]);
                                 }
                             }
                         }
