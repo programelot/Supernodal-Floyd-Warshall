@@ -15,13 +15,22 @@ enum class DrawType{
     original, permutated, eTree, analysis, error
 };
 
+void printErrorMessage(){
+    printf("Usage : PrintEtree option MatrixFile Output\n");
+    printf("Possible option need to be one of belows.\n");
+    printf("org : original (not permutated) graph.\n");
+    printf("perm : permutated graph.\n");
+    printf("etree : permutated graph with only seperators and supernodes informations.\n");
+    printf("analysis : permutated graph with all information related with elimination tree.\n");
+}
+
 int main(int argc, char* argv[]){
     unsigned char colorStrength = 255;
     unsigned char gray = 200;
     unsigned char darkGray = 125;
 
     if(argc != 4){
-        printf("Usage : PrintEtree option MatrixFile Output\n");
+        printErrorMessage();
         return 0;
     }
     DrawType drawType = DrawType::error;
@@ -47,11 +56,7 @@ int main(int argc, char* argv[]){
     }
 
     if(drawType == DrawType::error){
-        printf("Possible option need to be one of belows.\n");
-        printf("org : original (not permutated) graph.\n");
-        printf("perm : permutated graph.\n");
-        printf("etree : permutated graph with only seperators and supernodes informations.\n");
-        printf("analysis : permutated graph with all information related with elimination tree.\n");
+        printErrorMessage();
         return 0;
     }
     switch(drawType){
