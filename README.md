@@ -102,6 +102,14 @@ Detailed implementation will be uploaded soon.
 1. Single thread: 552.198
 2. Multiple threads: 80.538
 
+## Blocked Floyd-Warshall algorithm
+1. Single thread: 409.435
+2. Multiple threads: 54.791
+
+## Blocked Floyd-Warshall algorithm (With Compressive edge counting)
+1. Single thread: 367.1
+2. Multiple threads: 48.478
+
 ## Supernodal Floyd-Warshall
 1. Single thread: 31.285
 2. Multiple threads: 4.646
