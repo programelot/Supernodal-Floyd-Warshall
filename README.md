@@ -26,6 +26,18 @@ cmake --build .\build_release --target INSTALL --config Release
 # Implementation
 Detailed implementation will be uploaded soon.
 
+# Build and test
+
+```bash
+git clone https://github.com/programelot/Supernodal-Floyd-Warshall.git
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DUSE_THREAD=Y ..
+cmake --build .
+./Debug/APSP_SupernodalFloydWarshall.exe path_to_delaunay_n13.mtx path_to_output.txt    
+```
+
+
 # Source
 * APP : Directory includes all applications
     * APSP.cpp : All-source-shortest-path problem test
