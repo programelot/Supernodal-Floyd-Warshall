@@ -29,7 +29,13 @@ Detailed implementation will be uploaded soon.
 # Build and test
 
 ```bash
-git clone https://github.com/programelot/Supernodal-Floyd-Warshall.git
+git clone --recursive https://github.com/programelot/Supernodal-Floyd-Warshall.git
+cd ./modules/metis
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DUSE_THREAD=Y ..
+cmake --build .
+cd ../../..
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DUSE_THREAD=Y ..
@@ -78,7 +84,7 @@ cmake --build .
 
 # Result (sec)
 
-* Input : delaunay_n13
+* Input : delaunay_n13 (Used https://sparse.tamu.edu/DIMACS10/delaunay_n13)
 * CPU : I7-12700F 2.10 GHz
 * RAM : 32GB
 * OS : Windows 10
